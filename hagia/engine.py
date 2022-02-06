@@ -34,7 +34,7 @@ from pygame.locals import *
 sys.stdout = _stdout
 del(_stdout)
 
-class emu(object):
+class hagia(object):
     def __init__(self):
         pass
     def cartridge(self,cart):
@@ -70,7 +70,7 @@ class emu(object):
         try:self.load_flags(self.cart.flags)
         except AttributeError:
             self.load_flags()
-        
+
         try:self.load_map(self.cart.map)
         except AttributeError:
             self.load_map()
@@ -78,7 +78,7 @@ class emu(object):
         #print(str(self.map_data))
 
         #self.parse_config()
-    
+
     def load_gfx(self,atlas_data:str):
         atlas2 = atlas(atlas_data)#(getattr(self.cart,"gfx"))
         self.gfx_data = atlas2.load(self.multiplier)
@@ -256,7 +256,7 @@ class emu(object):
         for event in self.events:
             if event == pygame.QUIT:
                 self.shutdown()
-        
+
         if self.key_events[self.keys[6]]:
             self.pause()
             return
@@ -287,7 +287,7 @@ class emu(object):
 
         paused_clock = pygame.time.Clock()
 
-        pointer:int = 0        
+        pointer:int = 0
         while paused:
             if debug:print('paused')
             self.cls(0)
@@ -305,7 +305,7 @@ class emu(object):
                 paused = False
                 if debug:print('unpausing')
             if self.key_events[self.keys[5]]: # button_1 (x)
-                # for now it will unpause the game, but when menu depth is added .. . 
+                # for now it will unpause the game, but when menu depth is added .. .
                 # it will instead decrease the menu depth
                 # and there will be a check afterwards and if the menu depth is 0
                 # then it will unpause / resume the game
@@ -375,7 +375,7 @@ class emu(object):
         self.pump()
         self.register_events()
 
-    # reset cart to be exact ** 
+    # reset cart to be exact **
     def reset(self):
         # reset screen
         self.cls(0)
@@ -432,7 +432,7 @@ class emu(object):
 
     def get_ver_tuple(self) -> tuple:
         return version
-    
+
     def get_ver(self) -> str:
         return (
             '{}.{}.{}'.format(version[0],version[1],version[2])
@@ -443,7 +443,7 @@ class emu(object):
                 self.get_ver(),
                 str(pygame.get_sdl_version()[0])+'.'+str(pygame.get_sdl_version()[1])+'.'+str(+pygame.get_sdl_version()[2]),
                 str(sys.implementation.name)+' '+str(sys.version_info[0])+'.'+str(sys.version_info[1])+'.'+str(sys.version_info[2])+'-'+str(sys.version_info[3])+' / '+str(sys.implementation.cache_tag),
-                
+
             )
         )
 
@@ -540,31 +540,31 @@ class emu(object):
         for override_section in ini.sections():
             try:self.keys[0] = int(ini[override_section]['up'])
             except KeyError:pass
-            
+
             try:self.keys[1] = int(ini[override_section]['down'])
             except KeyError:pass
-            
+
             try:self.keys[2] = int(ini[override_section]['left'])
             except KeyError:pass
 
             try:self.keys[3] = int(ini[override_section]['right'])
-            except KeyError:pass 
+            except KeyError:pass
 
             try:self.keys[4] = int(ini[override_section]['button_0'])
-            except KeyError:pass 
+            except KeyError:pass
 
             try:self.keys[5] = int(ini[override_section]['button_1'])
             except KeyError:pass
 
             try:self.keys[6] = int(ini[override_section]['esc'])
-            except KeyError:pass 
+            except KeyError:pass
 
             try:self.fullscreen = False if int(ini[override_section]['fullscreen'])==0 else True
             except KeyError:pass
 
             try:self.framerate = int(ini[override_section]['framerate'])
             except KeyError:pass
-    
+
     def init_display(self) -> None:
 
         try:
@@ -594,7 +594,7 @@ class emu(object):
 
             self.dimensions = (width, height)
             flags = pygame.FULLSCREEN | pygame.HWSURFACE | pygame.DOUBLEBUF
-            
+
             self.screen = pygame.display.set_mode(self.dimensions,flags)
 
             del(width)
@@ -625,7 +625,7 @@ class emu(object):
         boot_clock = pygame.time.Clock()
 
         boot_loop = True
-        
+
         while boot_loop:
             self.cls(0)
             self.pump()
@@ -638,7 +638,7 @@ class emu(object):
                 flicker = not flicker
             elif frames < 63:
                 self.print('untitled engine',8,8,7,0,size=6)#size=35)
-            
+
             if frames < 60:
                 self.print('booting . . .',8,18,6,0)
 
@@ -743,7 +743,7 @@ class emu(object):
             #rotation=rotation,
             size=size*self.multiplier
         )
-        
+
 
     def cursor(self,x,y,col:int=0):
         pass
@@ -957,7 +957,7 @@ class emu(object):
                 #pal[c0] = pal[c1]
                 spr.set_palette([colour for colour in colour_palette])
                 spr.set_colorkey(self.colours[0])
-                
+
 
         elif p == 1:
             palette = self.colours
@@ -1046,7 +1046,7 @@ class emu(object):
 
     def min(self,x,y):
         return min(x,y)
-    
+
     def mid(self,x,y,z):
         raise NotImplementedError('mid is not implemented')
 
@@ -1149,7 +1149,7 @@ class emu(object):
         if n <= -1:
             pygame.mixer.music.fadeout(fade_len)
             return
-        
+
         if pygame.mixer.music.get_busy():
             pygame.mixer.music.unload()
         pygame.mixer.music.load(self.music_data[n],"ogg")
@@ -1179,7 +1179,7 @@ class emu(object):
         if type(layer)==int:
             for w in range(cell_w):
                 for h in range(cell_h):
-                    
+
                     mget = self.mget(
                         cell_x+w,
                         cell_y+h
@@ -1190,7 +1190,7 @@ class emu(object):
         elif layer == None:
             for w in range(cell_w):
                 for h in range(cell_h):
-                    
+
                     mget = self.mget(
                         cell_x+w,
                         cell_y+h
@@ -1198,7 +1198,7 @@ class emu(object):
                     #print(mget)
                     #if self.fget(mget,layer):
                     self.spr(mget,(sx * 8)+(w * 8),(sy * 8)+(h * 8),flip_x=False,flip_y=False)
-        
+
 
     def mapdraw(
         self,
@@ -1217,7 +1217,7 @@ class emu(object):
 
     def mset(self,x:int,y:int,v:int) -> None:
         self.map_data[(y * 128) + x] = v if type(v) == int else None
-        
+
 
     # strings
     # ==========
@@ -1246,5 +1246,3 @@ class emu(object):
             return int(_str)
         except ValueError:
             return float(_str)
-
-    
