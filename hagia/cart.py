@@ -3,7 +3,7 @@ from hagia.local_vars import default_font
 class cart:
     def __init__(
         self,
-        cart_name:str ='Untitled Hagia Cart',
+        cart_name:str ='Untitled Hagia Game',
         config_name:str ='config.ini',
         font:str = default_font,
         #icon:str = None

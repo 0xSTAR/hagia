@@ -334,7 +334,7 @@ class hagia(object):
 
             # text
             self.print('continue',34,54,7,0)
-            self.print('reset cart',34,63,7,0)
+            self.print('reset game',34,63,7,0)
             self.print('exit',34,72,7,0)
 
             # box
@@ -570,7 +570,7 @@ class hagia(object):
         try:
             pygame.display.set_caption(self.cart.cart_name)
         except AttributeError:
-            pygame.display.set_caption('Untitled Hagia Cart')
+            pygame.display.set_caption('Untitled Hagia Game')
 
         try:
             icon = pygame.image.load(self.cart.icon)
