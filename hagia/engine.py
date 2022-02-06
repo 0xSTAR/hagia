@@ -37,13 +37,13 @@ del(_stdout)
 class hagia(object):
     def __init__(self):
         pass
-    def cartridge(self,cart):
+    def load_game(self,cart):
         #self.initialize()
-        self.load_cart(cart)
+        self.init_load_game(cart)
         #self.boot()
         self.main()
 
-    def load_cart(self,cart):
+    def init_load_game(self,cart):
         self.original_cart_state = cart
         self.cart = cart
 
