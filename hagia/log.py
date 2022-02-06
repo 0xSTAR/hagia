@@ -1,4 +1,4 @@
-from local_vars import (
+from hagia.local_vars import (
     debug, version
 )
 

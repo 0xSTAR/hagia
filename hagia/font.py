@@ -11,7 +11,7 @@ del(_stdout)
 del(sys)
 del(os)
 
-from local_vars import (
+from hagia.local_vars import (
     default_font
 )
 

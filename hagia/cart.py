@@ -1,4 +1,4 @@
-from local_vars import default_font
+from hagia.local_vars import default_font
 
 class cart:
     def __init__(

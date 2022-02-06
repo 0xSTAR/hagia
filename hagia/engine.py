@@ -9,12 +9,12 @@ import math
 import random
 import time
 
-from cart import cart
-from log import log
-from atlas import atlas
-from font import font
-from error import hagia_init_error
-from local_vars import (
+from hagia.cart import cart
+from hagia.log import log
+from hagia.atlas import atlas
+from hagia.font import font
+from hagia.error import hagia_init_error
+from hagia.local_vars import (
     debug,
     version,
     default_font

@@ -1,4 +1,4 @@
-from error import atlas_error
+from hagia.error import atlas_error
 
 import sys
 import os
@@ -30,7 +30,7 @@ class atlas2:
     @atlas.setter
     def atlas(self, val):
         self._atlas = val
-    
+
     @atlas.deleter
     def atlas(self):
         del(self._atlas)
@@ -77,7 +77,7 @@ class atlas:
     @atlas.setter
     def atlas(self, val):
         self._atlas = val
-    
+
     @atlas.deleter
     def atlas(self):
         del(self._atlas)
@@ -134,14 +134,14 @@ class atlas:
         else:
             #raise atlas_error(f"""#Unable to load data type {str(type(self.atlas))}.
             #                    Must be either file path (string) or bytes.""")
-        
+
         # loop through every image in the atlas
         # -- the atlas is automatically assumed to be 128x64 --
         #for row in range(8):
         #    for sprite in range(16):
         #        pass
 
-        
+
 
     #@property
     #def gfx(self):
@@ -157,8 +157,3 @@ class atlas:
 
     #def kill(self):
     #    del(self)"""
-
-
-
-
-        
