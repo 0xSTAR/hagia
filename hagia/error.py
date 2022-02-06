@@ -1,4 +1,4 @@
-class pyco8_init_error(RuntimeError):
+class hagia_init_error(RuntimeError):
     def __init__(self,msg) -> None:
         self.exception_message = msg
     def __repr__(self) -> str:

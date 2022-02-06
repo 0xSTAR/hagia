@@ -3,10 +3,10 @@ from local_vars import default_font
 class cart:
     def __init__(
         self,
-        cart_name:str ='Untitled PYCO-8 Cart',
+        cart_name:str ='Untitled Hagia Cart',
         config_name:str ='config.ini',
         font:str = default_font,
-        #icon:str = None 
+        #icon:str = None
     ):
         self.cart_name = cart_name
         self.config_name = config_name

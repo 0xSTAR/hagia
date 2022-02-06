@@ -137,11 +137,11 @@ class editor(object):
             with open('map.data','r') as map_data:
                 data = map_data.read().replace('\n','').split(',')
                 new_data = list(filter(None,data))
-                
+
                 for index,d in enumerate(new_data,start=0):
                     self.tiles[index].spr_index = int(d)
 
-            
+
 
 
 
@@ -176,7 +176,7 @@ class editor(object):
         self.importer()
 
         #self.atlas_panel = atlas_panel(146*self.scale_factor,512*self.scale_factor)
-    
+
     def _update(self):
         if not self.imported:
             # pressed import button
@@ -205,7 +205,7 @@ class editor(object):
         m_x, m_y = fake_m_x - self.global_offset_x, fake_m_y - self.global_offset_y
 
         cell_wh = 8 *self.scale_factor
-        
+
         if (
             m_x+self.global_offset_x > (self.base_wh[0] - 200) * self.scale_factor
         ):
@@ -226,7 +226,7 @@ class editor(object):
                     y >= 0 and y < 12 and # y < 12 used to be y < 11
                     tile_n > 0 and tile_n < 128
                 ):
-                    
+
                     self.selected_sprite = tile_n
                 #y = math.floor( (my + ((self.base_wh[1] - 50) * self.scale_factor)) ) / self.scale_factor / 2)
                 #x = math.floor((mx - (self.base_wh[0] - 180) * self.scale_factor) / self.scale_factor / 2 / 11)# (column)
@@ -244,20 +244,20 @@ class editor(object):
                 tile_n = (row * 128) + column
                 self.tiles[tile_n].spr_index = self.selected_sprite
 
-                if DEBUG: 
+                if DEBUG:
                     print(f'left  || x: {m_x} y: {m_y}')
                     print(f'y: {row}')
                     print(f'x: {column}')
 
             elif self.mse(2): # right click (remove)
-                
+
                 row = math.floor(m_y / self.scale_factor / 2 / 8) # y
                 column = math.floor(m_x / self.scale_factor / 2 / 8) # x
 
                 tile_n = (row * 128) + column
                 self.tiles[tile_n].spr_index = 0
 
-                if DEBUG: 
+                if DEBUG:
                     print(f'right || x: {m_x} y: {m_y}')
 
         cell_wh = 8 * self.scale_factor
@@ -367,7 +367,7 @@ class editor(object):
         prefix = ''
         for i in range(3-selected_len):
             prefix+='0'
-        
+
         x = self.base_wh[0] - 170
         y = 5
         self.print('selected: {}'.format(prefix+str(self.selected_sprite)),x,y,7,0,size=15)
@@ -428,7 +428,7 @@ class editor(object):
         self.init_mouse()
         self.init_time()
         self.configure()
-        
+
     def init_display(self) -> None:
         base_wh:tuple[int,int] = (1024,512)
         self.base_wh = base_wh
@@ -440,9 +440,9 @@ class editor(object):
         self.scale_factor = math.ceil(c_h / base_wh[1]) - 1
         dimens = (base_wh[0] * self.scale_factor,base_wh[1] * self.scale_factor)
 
-        pygame.display.set_caption('Map Editor 6243 ZX')
+        pygame.display.set_caption('Hagia Map Editor')
         try:
-            icon = pygame.image.load('pyco8.png')
+            icon = pygame.image.load('hagia.png')
         except FileNotFoundError:
             icon = None
         pygame.display.set_icon(icon) if icon != None else None
@@ -615,7 +615,7 @@ class editor(object):
         col=pygame.Color(20,20,20,a=255)
     ) -> None:
         if type(nice) == bool:
-            
+
             rect = pygame.Rect(
                 x0*self.scale_factor,
                 y0*self.scale_factor,
@@ -656,5 +656,3 @@ def main():
 
 if __name__ == '__main__':
     main()
-
-

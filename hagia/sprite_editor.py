@@ -72,7 +72,7 @@ class sprite(object):
                 )
                 _pixel_index+=1
 
-        
+
 
     def draw_menu(self):
         # draws in the down below area
@@ -95,7 +95,7 @@ class editor(object):
         self.selected_flag:int = 0
         self.page:int = 1 # sprite page starts at 1
 
-        self.exported:int = 0 
+        self.exported:int = 0
         self.flag_set_mode:bool = False
 
         self.save_file = None
@@ -143,7 +143,7 @@ class editor(object):
             self.save_as()
             self.sleep(0.1)
             return
-        
+
         if self.flag_set_mode:
             if self.btn(5):
                 self.flag_set_mode = not self.flag_set_mode
@@ -158,7 +158,7 @@ class editor(object):
                 self.sleep(0.1)
 
             if self.mse(0) or self.btn(6):
-                self.sprites[self.selected_sprite].flags[self.selected_flag] = not self.sprites[self.selected_sprite].flags[self.selected_flag] 
+                self.sprites[self.selected_sprite].flags[self.selected_flag] = not self.sprites[self.selected_sprite].flags[self.selected_flag]
                 self.sleep(0.1)
             return
 
@@ -190,13 +190,13 @@ class editor(object):
             self.sleep(0.1)
 
         # update mouse position
-        self.m_x, self.m_y = math.floor(pygame.mouse.get_pos()[0] / self.multiplier), math.floor(pygame.mouse.get_pos()[1] / self.multiplier) 
-        
+        self.m_x, self.m_y = math.floor(pygame.mouse.get_pos()[0] / self.multiplier), math.floor(pygame.mouse.get_pos()[1] / self.multiplier)
+
         # check if left click is pressed
         if self.mse(0):
             if DEBUG:print(f'x: {self.m_x}')
             if DEBUG:print(f'y: {self.m_y}')
-            
+
             viewport_startx = 8
             viewport_starty = 8
             s_wh = 8
@@ -215,7 +215,7 @@ class editor(object):
                 item = math.floor((self.m_x - viewport_startx) / s_wh)
                 row = math.floor((self.m_y - viewport_starty) / s_wh)
                 if DEBUG:print(f'item: {item} | row: {row}')
-                
+
                 sprite_pixel_index = row*8+item
                 if DEBUG:print(f'pixel index: {sprite_pixel_index}')
                 try:
@@ -240,11 +240,11 @@ class editor(object):
                 #tapped = math.floor(mx / 4) #if mx >= 0 else 0
 
                 #print(tapped)"""
-        
 
-        
 
-        
+
+
+
 
     def _draw(self) -> None:
         self.screen.fill(pygame.Color(97,97,97,a=255))
@@ -336,7 +336,7 @@ class editor(object):
         del(begin_of_string)
         del(selected_string)
 
-        
+
         # draw color palette, and square around selected color
         start_x = 85 * self.multiplier
         start_y = 16 * self.multiplier
@@ -482,9 +482,9 @@ class editor(object):
                     save_file2.write(save_data)
                 self.save_file = save_file
             except FileNotFoundError:
-                self.save_file=None 
+                self.save_file=None
                 del(save_file)
-                
+
                 return
             return
         self.save_file = None
@@ -558,7 +558,7 @@ class editor(object):
 
         for sprite_index,sprite in enumerate(self.sprites,start=0):
             # define the item on which row of the atlas it is currently going to draw
-            # to the atlas 
+            # to the atlas
             # by referencing the sprite_index variable
             atlas_item = 0 if sprite_index==0 else math.floor(sprite_index % 16)
             atlas_row = math.floor(sprite_index / 16)
@@ -610,7 +610,7 @@ class editor(object):
         with open('flags.data','w') as flags_file:
             flags_file.write(flag_data)
 
-        
+
 
     def shutdown(self) -> None:
         pygame.quit()
@@ -653,14 +653,14 @@ class editor(object):
         ]
 
     def init_display(self) -> None:
-        pygame.display.set_caption('Sprite Editor 8369XZ')
+        pygame.display.set_caption('Hagia Sprite Editor')
 
         try:
             if pygame.image.get_extended():
-                icon = pygame.image.load('pyco8.png')
+                icon = pygame.image.load('hagia.png')
                 pygame.display.set_icon(icon)
         except FileNotFoundError:
-            pass # couldn't find pyco8 image icon :(
+            pass # couldn't find hagia image icon :(
 
         height = pygame.display.Info().current_h
         self.multiplier = math.floor(height/128) - 1

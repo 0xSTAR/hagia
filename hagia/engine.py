@@ -13,7 +13,7 @@ from cart import cart
 from log import log
 from atlas import atlas
 from font import font
-from error import pyco8_init_error
+from error import hagia_init_error
 from local_vars import (
     debug,
     version,
@@ -439,7 +439,7 @@ class hagia(object):
         )
 
     def print_info(self) -> None:
-        sys.stdout.write('\nPYCO-8 {}\nSDL {}\n{}\n'.format(
+        sys.stdout.write('\nHagia Engine {}\nSDL {}\n{}\n'.format(
                 self.get_ver(),
                 str(pygame.get_sdl_version()[0])+'.'+str(pygame.get_sdl_version()[1])+'.'+str(+pygame.get_sdl_version()[2]),
                 str(sys.implementation.name)+' '+str(sys.version_info[0])+'.'+str(sys.version_info[1])+'.'+str(sys.version_info[2])+'-'+str(sys.version_info[3])+' / '+str(sys.implementation.cache_tag),
@@ -570,13 +570,13 @@ class hagia(object):
         try:
             pygame.display.set_caption(self.cart.cart_name)
         except AttributeError:
-            pygame.display.set_caption('Untitled PYCO-8 Game')
+            pygame.display.set_caption('Untitled Hagia Cart')
 
         try:
             icon = pygame.image.load(self.cart.icon)
         except AttributeError:
             try:
-                icon = pygame.image.load('pyco8.png')
+                icon = pygame.image.load('hagia.png')
             except FileNotFoundError:
                 icon = None
 
