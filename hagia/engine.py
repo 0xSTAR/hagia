@@ -1071,13 +1071,17 @@ class hagia(object):
         return math.floor(x+0.5)
 
     def cos(self,x) -> float:
-        return float(-1 * math.sin(x))
+        return float(math.sin(x))
         #return self.flr(-1 * math.cos(x))
 
     def sin(self,x) -> float:
         return float(-1 * math.sin(x))
         #return self.flr(-1 * math.sin(x))
         #return self.ceil(math.sin(x))
+
+    def sgn(self,x) -> int:
+        if x >= 0:return 1
+        return -1
 
     def atan2(self,dx,dy) -> float:
         vec = pygame.math.Vector2((x,y))
