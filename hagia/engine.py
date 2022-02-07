@@ -273,7 +273,7 @@ class hagia(object):
 
         # initial drawing - text
         self.print('continue',34,54,7,0,5)
-        self.print('reset cart',34,63,7,0,5)
+        self.print('reset game',34,63,7,0,5)
         self.print('exit',34,72,7,0,5)
 
         # initial drawing - box
@@ -732,17 +732,23 @@ class hagia(object):
         text,
         x,
         y,
-        fgcolor=0,
-        bgcolor=0,
+        fgcolor=None,
+        bgcolor=None,
         #style=pygame.STYLE_DEFAULT,
         #rotation=0,
         size=4
     ):
-        self.font.render_to(self.screen,((x*self.multiplier)+self.global_offset_x+self.camera_x,(y*self.multiplier)+self.global_offset_y+self.camera_y),text,fgcolor=self.colours[fgcolor],bgcolor=self.colours[bgcolor],
+        fgc = None if fgcolor == None else self.colours[fgcolor]
+        bgc = None if bgcolor == None else self.colours[bgcolor]
+        self.font.render_to(self.screen,((x*self.multiplier)+self.global_offset_x+self.camera_x,(y*self.multiplier)+self.global_offset_y+self.camera_y),
+            text,fgcolor=fgc,
+            bgcolor=bgc,
             #style=style,
             #rotation=rotation,
             size=size*self.multiplier
         )
+        del(fgc)
+        del(bgc)
 
 
     def cursor(self,x,y,col:int=0):
@@ -828,7 +834,8 @@ class hagia(object):
         y0,
         x1,
         y1,
-        col:int=0
+        col:int=0,
+        w=1
     ):
         rect = pygame.Rect(
             (x0*self.multiplier)+self.global_offset_x+(self.camera_x*self.multiplier),
@@ -840,7 +847,7 @@ class hagia(object):
             self.screen,
             self.colours[col],
             rect,
-            width=0
+            width=w*self.multiplier
         )
 
     def ovalfill(
@@ -850,7 +857,7 @@ class hagia(object):
         x1,
         y1,
         col:int=0,
-        width=1
+        width=0
     ):
         rect = pygame.Rect(
             (x0*self.multiplier)+self.global_offset_x+(self.camera_x*self.multiplier),
@@ -871,14 +878,15 @@ class hagia(object):
         y0,
         x1=None,
         y1=None,
-        col:int=0
+        col:int=0,
+        w=1
     ):
         pygame.draw.line(
             self.screen,
             self.colours[col],
             ((x0*self.multiplier)+self.global_offset_x+(self.camera_x*self.multiplier),(y0*self.multiplier)+self.global_offset_y+(self.camera_y*self.multiplier)),
             ((x1*self.multiplier)+self.global_offset_x+(self.camera_x*self.multiplier),(y1*self.multiplier)+self.global_offset_y+(self.camera_y*self.multiplier)),
-            width=1*self.multiplier
+            width=w*self.multiplier
         )
 
     def rect(
@@ -887,7 +895,8 @@ class hagia(object):
         y0,
         x1,
         y1,
-        col:int=0
+        col:int=0,
+        w=1
     ):
         rect = pygame.Rect(
             (x0*self.multiplier)+self.global_offset_x+(self.camera_x*self.multiplier),
@@ -895,7 +904,7 @@ class hagia(object):
             ((x1-x0)*self.multiplier),
             ((y1-y0)*self.multiplier)
         )
-        pygame.draw.rect(self.screen,self.colours[col],rect,width=1*self.multiplier)
+        pygame.draw.rect(self.screen,self.colours[col],rect,width=w*self.multiplier)
 
     def rectfill(
         self,
@@ -991,12 +1000,13 @@ class hagia(object):
             pygame.Color(255,204,170,a=255) # light-peach / 15
         ]
 
+        # commented out cause pygame wasnt too happy
+        #self.screen.set_palette([color for color in self.colours])
+        for spr in self.gfx_data:
+            spr.set_palette([color for color in self.colours])
+
         for spr in self.gfx_data:
             spr.set_colorkey(self.colours[0])
-
-        #self.screen.set_palette([color for color in self.colours])
-        #for spr in self.gfx_data:
-        #    spr.set_palette([color for color in self.colours])
 
     def palt(self,c,t:bool=False):
         pass
@@ -1006,7 +1016,8 @@ class hagia(object):
         n,
         x,
         y,
-        wh:tuple=(8,8),
+        w:int=8,
+        h:int=8,
         flip_x:bool=False,
         flip_y:bool=False
     ):
@@ -1017,7 +1028,7 @@ class hagia(object):
                 (x*self.multiplier)+self.global_offset_x+(self.camera_x*self.multiplier),
                 (y*self.multiplier)+self.global_offset_y+(self.camera_y*self.multiplier)
             ),
-            (0,0,8*self.multiplier,8*self.multiplier)
+            (0,0,w*self.multiplier,h*self.multiplier)
         )
 
     def sspr(
@@ -1059,11 +1070,13 @@ class hagia(object):
     def xround(self,x) -> int:
         return math.floor(x+0.5)
 
-    def cos(self,x) -> int:
-        return self.ceil(-1 * math.cos(x))
+    def cos(self,x) -> float:
+        return float(-1 * math.sin(x))
+        #return self.flr(-1 * math.cos(x))
 
-    def sin(self,x) -> int:
-        return self.ceil(-1 * math.sin(x))
+    def sin(self,x) -> float:
+        return float(-1 * math.sin(x))
+        #return self.flr(-1 * math.sin(x))
         #return self.ceil(math.sin(x))
 
     def atan2(self,dx,dy) -> float:
@@ -1071,7 +1084,7 @@ class hagia(object):
         return vec.to_angle()
 
     def sqrt(self,x) -> int:
-        return math.ceil(math.sqrt(x))
+        return math.floor(math.sqrt(x))
 
     def abs(self,x):
         return abs(x)
@@ -1081,6 +1094,14 @@ class hagia(object):
 
     def srand(self,x) -> None:
         random.seed(x)
+
+    # time
+    # ==========
+
+    # delta time
+    def dt(self) -> float:
+        # returns time in seconds
+        return float(self.game_clock.get_time() / 1000)
 
 
     # input
@@ -1102,7 +1123,7 @@ class hagia(object):
         if not index>-1:tbl.append(val);return
         tbl[index]=val
 
-    def delete(self,tbl,val) -> None:
+    def del(self,tbl,val) -> None:
         tbl.remove(val)
 
     def deli(self,tbl,i:int=-1) -> None:
