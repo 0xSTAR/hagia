@@ -79,6 +79,38 @@ class hagia(object):
 
         #self.parse_config()
 
+    def load(self,_cart):
+        # load data from another cart
+        
+        cart = _cart
+
+        try:
+            self.load_gfx(cart.gfx)
+        except:
+            pass
+
+        try:
+            self.load_sfx(cart.sfx)
+        except:
+            pass
+
+        try:
+            self.load_music(cart.music)
+        except:
+            pass
+
+        try:
+            self.load_flags(cart.flags)
+        except:
+            pass
+
+        try:
+            self.load_map(cart.map)
+        except:
+            pass
+
+        del(cart)
+
     def load_gfx(self,atlas_data:str):
         atlas2 = atlas(atlas_data)#(getattr(self.cart,"gfx"))
         self.gfx_data = atlas2.load(self.multiplier)
@@ -240,7 +272,7 @@ class hagia(object):
         # if reset option, it will stop the main loop
         self.main_loop = True
         while self.main_loop:
-            self.cls(0)
+            #self.cls(0)
             self.pump()
             self.register_events()
             self.main_loop_checks()
@@ -248,7 +280,9 @@ class hagia(object):
             self.cart._draw()
             #self.p8_print('Hello World',50,50,fgcolor=self.colours[7],size=50)
             self.clear_events()
+            self.render()
             self.flip()
+            self.clean_screen()
             self.game_clock.tick(self.framerate)
 
     def main_loop_checks(self):
@@ -269,7 +303,8 @@ class hagia(object):
 
         # needs to sleep and blacken screen
         # or else instantly unpauses itself
-        self.cls(0)
+        #self.cls(0)
+        self.clean_screen()
 
         # initial drawing - text
         self.print('continue',34,54,7,0,5)
@@ -279,6 +314,7 @@ class hagia(object):
         # initial drawing - box
         self.rect(24,48,128-28,128-48,7)
 
+        self.render()
         self.flip()
         self.sleep(0.2)
 
@@ -355,7 +391,9 @@ class hagia(object):
 
 
             self.clear_events()
+            self.render()
             self.flip()
+            self.clean_screen()
             paused_clock.tick(self.framerate)
 
             # the events just register too fast
@@ -429,6 +467,16 @@ class hagia(object):
         # begins the loop
         self.main()
 
+    def render(self) -> None :
+        self.display.blit(
+            self.screen,
+            (0,0)
+        )
+
+    def clean_screen(self):
+        self.display.fill((0,0,0,255))
+        self.screen.fill((0,0,0,255))
+
 
     def get_ver_tuple(self) -> tuple:
         return version
@@ -478,7 +526,7 @@ class hagia(object):
         self.log = log()
 
     def init_colour(self) -> None:
-        self.colours = [
+        """self.colours = [
             pygame.Color(0,0,0,a=255), # black / 0
             pygame.Color(29,43,83,a=255), # dark blue / 1
             pygame.Color(126,37,83,a=255), # dark purple / 2
@@ -495,6 +543,265 @@ class hagia(object):
             pygame.Color(131,118,156,a=255), # lavender / 13
             pygame.Color(255,119,168,a=255), # pink / 14
             pygame.Color(255,204,170,a=255) # light-peach / 15
+        ]"""
+
+        self.colours = [
+            pygame.Color(0, 0, 0, 255),
+            pygame.Color(29, 43, 83, 255),
+            pygame.Color(126, 37, 83, 255),
+            pygame.Color(0, 135, 81, 255),
+            pygame.Color(171, 82, 54, 255),
+            pygame.Color(95, 87, 79, 255),
+            pygame.Color(194, 195, 199, 255),
+            pygame.Color(255, 241, 232, 255),
+            pygame.Color(255, 0, 77, 255),
+            pygame.Color(255, 163, 0, 255),
+            pygame.Color(255, 236, 39, 255),
+            pygame.Color(0, 228, 54, 255),
+            pygame.Color(41, 173, 255, 255),
+            pygame.Color(131, 118, 156, 255),
+            pygame.Color(255, 119, 168, 255),
+            pygame.Color(255, 204, 170, 255),
+            pygame.Color(0, 146, 0, 255),
+            pygame.Color(0, 146, 85, 255),
+            pygame.Color(0, 146, 170, 255),
+            pygame.Color(0, 146, 255, 255),
+            pygame.Color(0, 182, 0, 255),
+            pygame.Color(0, 182, 85, 255),
+            pygame.Color(0, 182, 170, 255),
+            pygame.Color(0, 182, 255, 255),
+            pygame.Color(0, 219, 0, 255),
+            pygame.Color(0, 219, 85, 255),
+            pygame.Color(0, 219, 170, 255),
+            pygame.Color(0, 219, 255, 255),
+            pygame.Color(0, 255, 0, 255),
+            pygame.Color(0, 255, 85, 255),
+            pygame.Color(0, 255, 170, 255),
+            pygame.Color(0, 255, 255, 255),
+            pygame.Color(85, 0, 0, 255),
+            pygame.Color(85, 0, 85, 255),
+            pygame.Color(85, 0, 170, 255),
+            pygame.Color(85, 0, 255, 255),
+            pygame.Color(85, 36, 0, 255),
+            pygame.Color(85, 36, 85, 255),
+            pygame.Color(85, 36, 170, 255),
+            pygame.Color(85, 36, 255, 255),
+            pygame.Color(85, 73, 0, 255),
+            pygame.Color(85, 73, 85, 255),
+            pygame.Color(85, 73, 170, 255),
+            pygame.Color(85, 73, 255, 255),
+            pygame.Color(85, 109, 0, 255),
+            pygame.Color(85, 109, 85, 255),
+            pygame.Color(85, 109, 170, 255),
+            pygame.Color(85, 109, 255, 255),
+            pygame.Color(85, 146, 0, 255),
+            pygame.Color(85, 146, 85, 255),
+            pygame.Color(85, 146, 170, 255),
+            pygame.Color(85, 146, 255, 255),
+            pygame.Color(85, 182, 0, 255),
+            pygame.Color(85, 182, 85, 255),
+            pygame.Color(85, 182, 170, 255),
+            pygame.Color(85, 182, 255, 255),
+            pygame.Color(85, 219, 0, 255),
+            pygame.Color(85, 219, 85, 255),
+            pygame.Color(85, 219, 170, 255),
+            pygame.Color(85, 219, 255, 255),
+            pygame.Color(85, 255, 0, 255),
+            pygame.Color(85, 255, 85, 255),
+            pygame.Color(85, 255, 170, 255),
+            pygame.Color(85, 255, 255, 255),
+            pygame.Color(170, 0, 0, 255),
+            pygame.Color(170, 0, 85, 255),
+            pygame.Color(170, 0, 170, 255),
+            pygame.Color(170, 0, 255, 255),
+            pygame.Color(170, 36, 0, 255),
+            pygame.Color(170, 36, 85, 255),
+            pygame.Color(170, 36, 170, 255),
+            pygame.Color(170, 36, 255, 255),
+            pygame.Color(170, 73, 0, 255),
+            pygame.Color(170, 73, 85, 255),
+            pygame.Color(170, 73, 170, 255),
+            pygame.Color(170, 73, 255, 255),
+            pygame.Color(170, 109, 0, 255),
+            pygame.Color(170, 109, 85, 255),
+            pygame.Color(170, 109, 170, 255),
+            pygame.Color(170, 109, 255, 255),
+            pygame.Color(170, 146, 0, 255),
+            pygame.Color(170, 146, 85, 255),
+            pygame.Color(170, 146, 170, 255),
+            pygame.Color(170, 146, 255, 255),
+            pygame.Color(170, 182, 0, 255),
+            pygame.Color(170, 182, 85, 255),
+            pygame.Color(170, 182, 170, 255),
+            pygame.Color(170, 182, 255, 255),
+            pygame.Color(170, 219, 0, 255),
+            pygame.Color(170, 219, 85, 255),
+            pygame.Color(170, 219, 170, 255),
+            pygame.Color(170, 219, 255, 255),
+            pygame.Color(170, 255, 0, 255),
+            pygame.Color(170, 255, 85, 255),
+            pygame.Color(170, 255, 170, 255),
+            pygame.Color(170, 255, 255, 255),
+            pygame.Color(255, 0, 0, 255),
+            pygame.Color(255, 0, 85, 255),
+            pygame.Color(255, 0, 170, 255),
+            pygame.Color(255, 0, 255, 255),
+            pygame.Color(255, 36, 0, 255),
+            pygame.Color(255, 36, 85, 255),
+            pygame.Color(255, 36, 170, 255),
+            pygame.Color(255, 36, 255, 255),
+            pygame.Color(255, 73, 0, 255),
+            pygame.Color(255, 73, 85, 255),
+            pygame.Color(255, 73, 170, 255),
+            pygame.Color(255, 73, 255, 255),
+            pygame.Color(255, 109, 0, 255),
+            pygame.Color(255, 109, 85, 255),
+            pygame.Color(255, 109, 170, 255),
+            pygame.Color(255, 109, 255, 255),
+            pygame.Color(255, 146, 0, 255),
+            pygame.Color(255, 146, 85, 255),
+            pygame.Color(255, 146, 170, 255),
+            pygame.Color(255, 146, 255, 255),
+            pygame.Color(255, 182, 0, 255),
+            pygame.Color(255, 182, 85, 255),
+            pygame.Color(255, 182, 170, 255),
+            pygame.Color(255, 182, 255, 255),
+            pygame.Color(255, 219, 0, 255),
+            pygame.Color(255, 219, 85, 255),
+            pygame.Color(255, 219, 170, 255),
+            pygame.Color(255, 219, 255, 255),
+            pygame.Color(255, 255, 0, 255),
+            pygame.Color(255, 255, 85, 255),
+            pygame.Color(255, 255, 170, 255),
+            pygame.Color(255, 255, 255, 255),
+            pygame.Color(0, 0, 0, 255),
+            pygame.Color(0, 0, 85, 255),
+            pygame.Color(0, 0, 170, 255),
+            pygame.Color(0, 0, 255, 255),
+            pygame.Color(0, 36, 0, 255),
+            pygame.Color(0, 36, 85, 255),
+            pygame.Color(0, 36, 170, 255),
+            pygame.Color(0, 36, 255, 255),
+            pygame.Color(0, 73, 0, 255),
+            pygame.Color(0, 73, 85, 255),
+            pygame.Color(0, 73, 170, 255),
+            pygame.Color(0, 73, 255, 255),
+            pygame.Color(0, 109, 0, 255),
+            pygame.Color(0, 109, 85, 255),
+            pygame.Color(0, 109, 170, 255),
+            pygame.Color(0, 109, 255, 255),
+            pygame.Color(0, 146, 0, 255),
+            pygame.Color(0, 146, 85, 255),
+            pygame.Color(0, 146, 170, 255),
+            pygame.Color(0, 146, 255, 255),
+            pygame.Color(0, 182, 0, 255),
+            pygame.Color(0, 182, 85, 255),
+            pygame.Color(0, 182, 170, 255),
+            pygame.Color(0, 182, 255, 255),
+            pygame.Color(0, 219, 0, 255),
+            pygame.Color(0, 219, 85, 255),
+            pygame.Color(0, 219, 170, 255),
+            pygame.Color(0, 219, 255, 255),
+            pygame.Color(0, 255, 0, 255),
+            pygame.Color(0, 255, 85, 255),
+            pygame.Color(0, 255, 170, 255),
+            pygame.Color(0, 255, 255, 255),
+            pygame.Color(85, 0, 0, 255),
+            pygame.Color(85, 0, 85, 255),
+            pygame.Color(85, 0, 170, 255),
+            pygame.Color(85, 0, 255, 255),
+            pygame.Color(85, 36, 0, 255),
+            pygame.Color(85, 36, 85, 255),
+            pygame.Color(85, 36, 170, 255),
+            pygame.Color(85, 36, 255, 255),
+            pygame.Color(85, 73, 0, 255),
+            pygame.Color(85, 73, 85, 255),
+            pygame.Color(85, 73, 170, 255),
+            pygame.Color(85, 73, 255, 255),
+            pygame.Color(85, 109, 0, 255),
+            pygame.Color(85, 109, 85, 255),
+            pygame.Color(85, 109, 170, 255),
+            pygame.Color(85, 109, 255, 255),
+            pygame.Color(85, 146, 0, 255),
+            pygame.Color(85, 146, 85, 255),
+            pygame.Color(85, 146, 170, 255),
+            pygame.Color(85, 146, 255, 255),
+            pygame.Color(85, 182, 0, 255),
+            pygame.Color(85, 182, 85, 255),
+            pygame.Color(85, 182, 170, 255),
+            pygame.Color(85, 182, 255, 255),
+            pygame.Color(85, 219, 0, 255),
+            pygame.Color(85, 219, 85, 255),
+            pygame.Color(85, 219, 170, 255),
+            pygame.Color(85, 219, 255, 255),
+            pygame.Color(85, 255, 0, 255),
+            pygame.Color(85, 255, 85, 255),
+            pygame.Color(85, 255, 170, 255),
+            pygame.Color(85, 255, 255, 255),
+            pygame.Color(170, 0, 0, 255),
+            pygame.Color(170, 0, 85, 255),
+            pygame.Color(170, 0, 170, 255),
+            pygame.Color(170, 0, 255, 255),
+            pygame.Color(170, 36, 0, 255),
+            pygame.Color(170, 36, 85, 255),
+            pygame.Color(170, 36, 170, 255),
+            pygame.Color(170, 36, 255, 255),
+            pygame.Color(170, 73, 0, 255),
+            pygame.Color(170, 73, 85, 255),
+            pygame.Color(170, 73, 170, 255),
+            pygame.Color(170, 73, 255, 255),
+            pygame.Color(170, 109, 0, 255),
+            pygame.Color(170, 109, 85, 255),
+            pygame.Color(170, 109, 170, 255),
+            pygame.Color(170, 109, 255, 255),
+            pygame.Color(170, 146, 0, 255),
+            pygame.Color(170, 146, 85, 255),
+            pygame.Color(170, 146, 170, 255),
+            pygame.Color(170, 146, 255, 255),
+            pygame.Color(170, 182, 0, 255),
+            pygame.Color(170, 182, 85, 255),
+            pygame.Color(170, 182, 170, 255),
+            pygame.Color(170, 182, 255, 255),
+            pygame.Color(170, 219, 0, 255),
+            pygame.Color(170, 219, 85, 255),
+            pygame.Color(170, 219, 170, 255),
+            pygame.Color(170, 219, 255, 255),
+            pygame.Color(170, 255, 0, 255),
+            pygame.Color(170, 255, 85, 255),
+            pygame.Color(170, 255, 170, 255),
+            pygame.Color(170, 255, 255, 255),
+            pygame.Color(255, 0, 0, 255),
+            pygame.Color(255, 0, 85, 255),
+            pygame.Color(255, 0, 170, 255),
+            pygame.Color(255, 0, 255, 255),
+            pygame.Color(255, 36, 0, 255),
+            pygame.Color(255, 36, 85, 255),
+            pygame.Color(255, 36, 170, 255),
+            pygame.Color(255, 36, 255, 255),
+            pygame.Color(255, 73, 0, 255),
+            pygame.Color(255, 73, 85, 255),
+            pygame.Color(255, 73, 170, 255),
+            pygame.Color(255, 73, 255, 255),
+            pygame.Color(255, 109, 0, 255),
+            pygame.Color(255, 109, 85, 255),
+            pygame.Color(255, 109, 170, 255),
+            pygame.Color(255, 109, 255, 255),
+            pygame.Color(255, 146, 0, 255),
+            pygame.Color(255, 146, 85, 255),
+            pygame.Color(255, 146, 170, 255),
+            pygame.Color(255, 146, 255, 255),
+            pygame.Color(255, 182, 0, 255),
+            pygame.Color(255, 182, 85, 255),
+            pygame.Color(255, 182, 170, 255),
+            pygame.Color(255, 182, 255, 255),
+            pygame.Color(255, 219, 0, 255),
+            pygame.Color(255, 219, 85, 255),
+            pygame.Color(255, 219, 170, 255),
+            pygame.Color(255, 219, 255, 255),
+            pygame.Color(255, 255, 0, 255),
+            pygame.Color(255, 255, 85, 255),
+            pygame.Color(255, 255, 170, 255),
+            pygame.Color(255, 255, 255, 255),
         ]
 
     def parse_config(self) -> None:
@@ -584,6 +891,7 @@ class hagia(object):
         del(icon)
 
         height = pygame.display.Info().current_h
+
         if self.fullscreen:
             self.multiplier = math.floor(height / 128)
 
@@ -595,7 +903,12 @@ class hagia(object):
             self.dimensions = (width, height)
             flags = pygame.FULLSCREEN | pygame.HWSURFACE | pygame.DOUBLEBUF
 
-            self.screen = pygame.display.set_mode(self.dimensions,flags)
+            # fake screen
+            self.screen = pygame.Surface(self.dimensions,depth=8)
+            self.screen.set_palette(self.colours)
+
+            # actual screen that gets rendered to
+            self.display = pygame.display.set_mode(self.dimensions,flags)
 
             del(width)
         else:
@@ -606,7 +919,12 @@ class hagia(object):
 
             #flags = pygame.NOFRAME
 
-            self.screen = pygame.display.set_mode(self.dimensions)#,flags)
+            # fake screen
+            self.screen = pygame.Surface(self.dimensions,depth=8)
+            self.screen.set_palette(self.colours)
+
+            # actual screen that gets rendered to
+            self.display = pygame.display.set_mode(self.dimensions)#,flags)
 
         del(height)
 
@@ -637,7 +955,7 @@ class hagia(object):
                     self.cls(6)
                 flicker = not flicker
             elif frames < 63:
-                self.print('untitled engine',8,8,7,0,size=6)#size=35)
+                self.print('hagia engine',8,8,7,0,size=6)#size=35)
 
             if frames < 60:
                 self.print('booting . . .',8,18,6,0)
@@ -648,7 +966,9 @@ class hagia(object):
             frames-=1
 
             self.clear_events()
+            self.render()
             self.flip()
+            self.clean_screen()
             boot_clock.tick(15)
 
         del(frames)
@@ -965,7 +1285,8 @@ class hagia(object):
                 #pal = self.colours
                 #pal[c0] = pal[c1]
                 spr.set_palette([colour for colour in colour_palette])
-                spr.set_colorkey(self.colours[0])
+                spr.set_colorkey((0,0,0,255))
+            self.colours = colour_palette
 
 
         elif p == 1:
@@ -973,6 +1294,7 @@ class hagia(object):
             palette[c0] = self.colours[c1]
             self.screen.set_palette([colour for colour in palette])
 
+            self.colours = palette
             del(palette)
 
         else:
@@ -981,7 +1303,7 @@ class hagia(object):
     #@singledispatch
     #@overload
     def rpal(self):
-        self.colours = [
+        """self.colours = [
             pygame.Color(0,0,0,a=255), # black / 0
             pygame.Color(29,43,83,a=255), # dark blue / 1
             pygame.Color(126,37,83,a=255), # dark purple / 2
@@ -998,10 +1320,271 @@ class hagia(object):
             pygame.Color(131,118,156,a=255), # lavender / 13
             pygame.Color(255,119,168,a=255), # pink / 14
             pygame.Color(255,204,170,a=255) # light-peach / 15
+        ]"""
+        # ^^^ old pico-8 colors
+
+        # new ATLAS colors
+        self.colours = [
+            pygame.Color(0, 0, 0, 255),
+            pygame.Color(29, 43, 83, 255),
+            pygame.Color(126, 37, 83, 255),
+            pygame.Color(0, 135, 81, 255),
+            pygame.Color(171, 82, 54, 255),
+            pygame.Color(95, 87, 79, 255),
+            pygame.Color(194, 195, 199, 255),
+            pygame.Color(255, 241, 232, 255),
+            pygame.Color(255, 0, 77, 255),
+            pygame.Color(255, 163, 0, 255),
+            pygame.Color(255, 236, 39, 255),
+            pygame.Color(0, 228, 54, 255),
+            pygame.Color(41, 173, 255, 255),
+            pygame.Color(131, 118, 156, 255),
+            pygame.Color(255, 119, 168, 255),
+            pygame.Color(255, 204, 170, 255),
+            pygame.Color(0, 146, 0, 255),
+            pygame.Color(0, 146, 85, 255),
+            pygame.Color(0, 146, 170, 255),
+            pygame.Color(0, 146, 255, 255),
+            pygame.Color(0, 182, 0, 255),
+            pygame.Color(0, 182, 85, 255),
+            pygame.Color(0, 182, 170, 255),
+            pygame.Color(0, 182, 255, 255),
+            pygame.Color(0, 219, 0, 255),
+            pygame.Color(0, 219, 85, 255),
+            pygame.Color(0, 219, 170, 255),
+            pygame.Color(0, 219, 255, 255),
+            pygame.Color(0, 255, 0, 255),
+            pygame.Color(0, 255, 85, 255),
+            pygame.Color(0, 255, 170, 255),
+            pygame.Color(0, 255, 255, 255),
+            pygame.Color(85, 0, 0, 255),
+            pygame.Color(85, 0, 85, 255),
+            pygame.Color(85, 0, 170, 255),
+            pygame.Color(85, 0, 255, 255),
+            pygame.Color(85, 36, 0, 255),
+            pygame.Color(85, 36, 85, 255),
+            pygame.Color(85, 36, 170, 255),
+            pygame.Color(85, 36, 255, 255),
+            pygame.Color(85, 73, 0, 255),
+            pygame.Color(85, 73, 85, 255),
+            pygame.Color(85, 73, 170, 255),
+            pygame.Color(85, 73, 255, 255),
+            pygame.Color(85, 109, 0, 255),
+            pygame.Color(85, 109, 85, 255),
+            pygame.Color(85, 109, 170, 255),
+            pygame.Color(85, 109, 255, 255),
+            pygame.Color(85, 146, 0, 255),
+            pygame.Color(85, 146, 85, 255),
+            pygame.Color(85, 146, 170, 255),
+            pygame.Color(85, 146, 255, 255),
+            pygame.Color(85, 182, 0, 255),
+            pygame.Color(85, 182, 85, 255),
+            pygame.Color(85, 182, 170, 255),
+            pygame.Color(85, 182, 255, 255),
+            pygame.Color(85, 219, 0, 255),
+            pygame.Color(85, 219, 85, 255),
+            pygame.Color(85, 219, 170, 255),
+            pygame.Color(85, 219, 255, 255),
+            pygame.Color(85, 255, 0, 255),
+            pygame.Color(85, 255, 85, 255),
+            pygame.Color(85, 255, 170, 255),
+            pygame.Color(85, 255, 255, 255),
+            pygame.Color(170, 0, 0, 255),
+            pygame.Color(170, 0, 85, 255),
+            pygame.Color(170, 0, 170, 255),
+            pygame.Color(170, 0, 255, 255),
+            pygame.Color(170, 36, 0, 255),
+            pygame.Color(170, 36, 85, 255),
+            pygame.Color(170, 36, 170, 255),
+            pygame.Color(170, 36, 255, 255),
+            pygame.Color(170, 73, 0, 255),
+            pygame.Color(170, 73, 85, 255),
+            pygame.Color(170, 73, 170, 255),
+            pygame.Color(170, 73, 255, 255),
+            pygame.Color(170, 109, 0, 255),
+            pygame.Color(170, 109, 85, 255),
+            pygame.Color(170, 109, 170, 255),
+            pygame.Color(170, 109, 255, 255),
+            pygame.Color(170, 146, 0, 255),
+            pygame.Color(170, 146, 85, 255),
+            pygame.Color(170, 146, 170, 255),
+            pygame.Color(170, 146, 255, 255),
+            pygame.Color(170, 182, 0, 255),
+            pygame.Color(170, 182, 85, 255),
+            pygame.Color(170, 182, 170, 255),
+            pygame.Color(170, 182, 255, 255),
+            pygame.Color(170, 219, 0, 255),
+            pygame.Color(170, 219, 85, 255),
+            pygame.Color(170, 219, 170, 255),
+            pygame.Color(170, 219, 255, 255),
+            pygame.Color(170, 255, 0, 255),
+            pygame.Color(170, 255, 85, 255),
+            pygame.Color(170, 255, 170, 255),
+            pygame.Color(170, 255, 255, 255),
+            pygame.Color(255, 0, 0, 255),
+            pygame.Color(255, 0, 85, 255),
+            pygame.Color(255, 0, 170, 255),
+            pygame.Color(255, 0, 255, 255),
+            pygame.Color(255, 36, 0, 255),
+            pygame.Color(255, 36, 85, 255),
+            pygame.Color(255, 36, 170, 255),
+            pygame.Color(255, 36, 255, 255),
+            pygame.Color(255, 73, 0, 255),
+            pygame.Color(255, 73, 85, 255),
+            pygame.Color(255, 73, 170, 255),
+            pygame.Color(255, 73, 255, 255),
+            pygame.Color(255, 109, 0, 255),
+            pygame.Color(255, 109, 85, 255),
+            pygame.Color(255, 109, 170, 255),
+            pygame.Color(255, 109, 255, 255),
+            pygame.Color(255, 146, 0, 255),
+            pygame.Color(255, 146, 85, 255),
+            pygame.Color(255, 146, 170, 255),
+            pygame.Color(255, 146, 255, 255),
+            pygame.Color(255, 182, 0, 255),
+            pygame.Color(255, 182, 85, 255),
+            pygame.Color(255, 182, 170, 255),
+            pygame.Color(255, 182, 255, 255),
+            pygame.Color(255, 219, 0, 255),
+            pygame.Color(255, 219, 85, 255),
+            pygame.Color(255, 219, 170, 255),
+            pygame.Color(255, 219, 255, 255),
+            pygame.Color(255, 255, 0, 255),
+            pygame.Color(255, 255, 85, 255),
+            pygame.Color(255, 255, 170, 255),
+            pygame.Color(255, 255, 255, 255),
+            pygame.Color(0, 0, 0, 255),
+            pygame.Color(0, 0, 85, 255),
+            pygame.Color(0, 0, 170, 255),
+            pygame.Color(0, 0, 255, 255),
+            pygame.Color(0, 36, 0, 255),
+            pygame.Color(0, 36, 85, 255),
+            pygame.Color(0, 36, 170, 255),
+            pygame.Color(0, 36, 255, 255),
+            pygame.Color(0, 73, 0, 255),
+            pygame.Color(0, 73, 85, 255),
+            pygame.Color(0, 73, 170, 255),
+            pygame.Color(0, 73, 255, 255),
+            pygame.Color(0, 109, 0, 255),
+            pygame.Color(0, 109, 85, 255),
+            pygame.Color(0, 109, 170, 255),
+            pygame.Color(0, 109, 255, 255),
+            pygame.Color(0, 146, 0, 255),
+            pygame.Color(0, 146, 85, 255),
+            pygame.Color(0, 146, 170, 255),
+            pygame.Color(0, 146, 255, 255),
+            pygame.Color(0, 182, 0, 255),
+            pygame.Color(0, 182, 85, 255),
+            pygame.Color(0, 182, 170, 255),
+            pygame.Color(0, 182, 255, 255),
+            pygame.Color(0, 219, 0, 255),
+            pygame.Color(0, 219, 85, 255),
+            pygame.Color(0, 219, 170, 255),
+            pygame.Color(0, 219, 255, 255),
+            pygame.Color(0, 255, 0, 255),
+            pygame.Color(0, 255, 85, 255),
+            pygame.Color(0, 255, 170, 255),
+            pygame.Color(0, 255, 255, 255),
+            pygame.Color(85, 0, 0, 255),
+            pygame.Color(85, 0, 85, 255),
+            pygame.Color(85, 0, 170, 255),
+            pygame.Color(85, 0, 255, 255),
+            pygame.Color(85, 36, 0, 255),
+            pygame.Color(85, 36, 85, 255),
+            pygame.Color(85, 36, 170, 255),
+            pygame.Color(85, 36, 255, 255),
+            pygame.Color(85, 73, 0, 255),
+            pygame.Color(85, 73, 85, 255),
+            pygame.Color(85, 73, 170, 255),
+            pygame.Color(85, 73, 255, 255),
+            pygame.Color(85, 109, 0, 255),
+            pygame.Color(85, 109, 85, 255),
+            pygame.Color(85, 109, 170, 255),
+            pygame.Color(85, 109, 255, 255),
+            pygame.Color(85, 146, 0, 255),
+            pygame.Color(85, 146, 85, 255),
+            pygame.Color(85, 146, 170, 255),
+            pygame.Color(85, 146, 255, 255),
+            pygame.Color(85, 182, 0, 255),
+            pygame.Color(85, 182, 85, 255),
+            pygame.Color(85, 182, 170, 255),
+            pygame.Color(85, 182, 255, 255),
+            pygame.Color(85, 219, 0, 255),
+            pygame.Color(85, 219, 85, 255),
+            pygame.Color(85, 219, 170, 255),
+            pygame.Color(85, 219, 255, 255),
+            pygame.Color(85, 255, 0, 255),
+            pygame.Color(85, 255, 85, 255),
+            pygame.Color(85, 255, 170, 255),
+            pygame.Color(85, 255, 255, 255),
+            pygame.Color(170, 0, 0, 255),
+            pygame.Color(170, 0, 85, 255),
+            pygame.Color(170, 0, 170, 255),
+            pygame.Color(170, 0, 255, 255),
+            pygame.Color(170, 36, 0, 255),
+            pygame.Color(170, 36, 85, 255),
+            pygame.Color(170, 36, 170, 255),
+            pygame.Color(170, 36, 255, 255),
+            pygame.Color(170, 73, 0, 255),
+            pygame.Color(170, 73, 85, 255),
+            pygame.Color(170, 73, 170, 255),
+            pygame.Color(170, 73, 255, 255),
+            pygame.Color(170, 109, 0, 255),
+            pygame.Color(170, 109, 85, 255),
+            pygame.Color(170, 109, 170, 255),
+            pygame.Color(170, 109, 255, 255),
+            pygame.Color(170, 146, 0, 255),
+            pygame.Color(170, 146, 85, 255),
+            pygame.Color(170, 146, 170, 255),
+            pygame.Color(170, 146, 255, 255),
+            pygame.Color(170, 182, 0, 255),
+            pygame.Color(170, 182, 85, 255),
+            pygame.Color(170, 182, 170, 255),
+            pygame.Color(170, 182, 255, 255),
+            pygame.Color(170, 219, 0, 255),
+            pygame.Color(170, 219, 85, 255),
+            pygame.Color(170, 219, 170, 255),
+            pygame.Color(170, 219, 255, 255),
+            pygame.Color(170, 255, 0, 255),
+            pygame.Color(170, 255, 85, 255),
+            pygame.Color(170, 255, 170, 255),
+            pygame.Color(170, 255, 255, 255),
+            pygame.Color(255, 0, 0, 255),
+            pygame.Color(255, 0, 85, 255),
+            pygame.Color(255, 0, 170, 255),
+            pygame.Color(255, 0, 255, 255),
+            pygame.Color(255, 36, 0, 255),
+            pygame.Color(255, 36, 85, 255),
+            pygame.Color(255, 36, 170, 255),
+            pygame.Color(255, 36, 255, 255),
+            pygame.Color(255, 73, 0, 255),
+            pygame.Color(255, 73, 85, 255),
+            pygame.Color(255, 73, 170, 255),
+            pygame.Color(255, 73, 255, 255),
+            pygame.Color(255, 109, 0, 255),
+            pygame.Color(255, 109, 85, 255),
+            pygame.Color(255, 109, 170, 255),
+            pygame.Color(255, 109, 255, 255),
+            pygame.Color(255, 146, 0, 255),
+            pygame.Color(255, 146, 85, 255),
+            pygame.Color(255, 146, 170, 255),
+            pygame.Color(255, 146, 255, 255),
+            pygame.Color(255, 182, 0, 255),
+            pygame.Color(255, 182, 85, 255),
+            pygame.Color(255, 182, 170, 255),
+            pygame.Color(255, 182, 255, 255),
+            pygame.Color(255, 219, 0, 255),
+            pygame.Color(255, 219, 85, 255),
+            pygame.Color(255, 219, 170, 255),
+            pygame.Color(255, 219, 255, 255),
+            pygame.Color(255, 255, 0, 255),
+            pygame.Color(255, 255, 85, 255),
+            pygame.Color(255, 255, 170, 255),
+            pygame.Color(255, 255, 255, 255),
         ]
 
         # commented out cause pygame wasnt too happy
-        #self.screen.set_palette([color for color in self.colours])
+        self.screen.set_palette([color for color in self.colours])
         for spr in self.gfx_data:
             spr.set_palette([color for color in self.colours])
 
@@ -1127,7 +1710,7 @@ class hagia(object):
         if not index>-1:tbl.append(val);return
         tbl[index]=val
 
-    def del(self,tbl,val) -> None:
+    def delete(self,tbl,val) -> None:
         tbl.remove(val)
 
     def deli(self,tbl,i:int=-1) -> None:

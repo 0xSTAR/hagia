@@ -370,11 +370,10 @@ Returns (type `int`) the rounded integer of `x`
 
 **hagia.engine.sin(x)**
 Returns the sin of `x`
-Note: The return value is automatically inverted (multiplied by -1) and floor'd
+Note: The return value is automatically inverted (multiplied by -1)
 
 **hagia.engine.cos(x)**
 Returns the cos of `x`
-Note: The return value is automatically inverted (multiplied by -1) and floor'd
 
 **hagia.engine.atan2(dx,dy)**
 Returns an angle between 0,1 from `dx`,`dy`
@@ -430,7 +429,7 @@ Returns a (type `bool`) whether `x` button is pressed or not
 Adds `val` to `tbl` at index `index`
 Note: If `index` is <= -1, it will simply append the value to the `tbl`
 
-**hagia.engine.del(tbl,val)**
+**hagia.engine.delete(tbl,val)**
 `tbl` = table to reference when deleting `val` (type `list`)
 `val` = value to remove from `tbl`
 

@@ -13,53 +13,6 @@ del(_stdout)
 del(sys)
 del(os)
 
-class atlas2:
-    def __init__(self, atlas:str):
-        #super().__init()
-        try:
-            self._atlas = pygame.image.load_basic(atlas)
-            #self._atlas = pygame.image.fromstring(bytes.fromhex(atlas),(128,64),"P").convert()
-        except ValueError as e:
-            print(repr(e))
-        except pygame.error as e:
-            print(repr(atlas_error(e)))
-    @property
-    def atlas(self):
-        return self._atlas
-
-    @atlas.setter
-    def atlas(self, val):
-        self._atlas = val
-
-    @atlas.deleter
-    def atlas(self):
-        del(self._atlas)
-
-    def load(
-        self,
-        multiplier:int,
-        colorkey=(0,0,0,255)
-    ):
-        """sprites = []
-        flags = pygame.RLEACCEL
-        for row in range(8):
-            for item in range(16):
-                spr = pygame.Surface((8,8),depth=8)
-                spr.blit(self.atlas,(0,0),(item*8,row*8,8,8))
-                spr_scaled = pygame.transform.scale(spr,(8*multiplier,8*multiplier))
-                spr_scaled.convert(8)
-                spr_scaled.set_colorkey(colorkey,flags)
-                sprites.append(spr_scaled)
-                del(spr)
-                del(spr_scaled)
-                #del(spr_size)
-        return [sprites[index] for index,spr in enumerate(sprites,start=0)]"""
-        flags = pygame.RLEACCEL
-        scaled_atlas = pygame.transform.scale(self.atlas,(128*multiplier,64*multiplier))
-        scaled_atlas.convert(8)
-        scaled_atlas.set_colorkey(colorkey,flags)
-        return scaled_atlas
-
 class atlas:
     def __init__(self, atlas:str):
         #super().__init()
@@ -101,6 +54,55 @@ class atlas:
                 del(spr_scaled)
                 #del(spr_size)
         return [sprites[index] for index,spr in enumerate(sprites,start=0)]
+
+"""
+class atlas2:
+    def __init__(self, atlas:str):
+        #super().__init()
+        try:
+            self._atlas = pygame.image.load_basic(atlas)
+            #self._atlas = pygame.image.fromstring(bytes.fromhex(atlas),(128,64),"P").convert()
+        except ValueError as e:
+            print(repr(e))
+        except pygame.error as e:
+            print(repr(atlas_error(e)))
+    @property
+    def atlas(self):
+        return self._atlas
+
+    @atlas.setter
+    def atlas(self, val):
+        self._atlas = val
+
+    @atlas.deleter
+    def atlas(self):
+        del(self._atlas)
+
+    def load(
+        self,
+        multiplier:int,
+        colorkey=(0,0,0,255)
+    ):
+        sprites = []
+        flags = pygame.RLEACCEL
+        for row in range(8):
+            for item in range(16):
+                spr = pygame.Surface((8,8),depth=8)
+                spr.blit(self.atlas,(0,0),(item*8,row*8,8,8))
+                spr_scaled = pygame.transform.scale(spr,(8*multiplier,8*multiplier))
+                spr_scaled.convert(8)
+                spr_scaled.set_colorkey(colorkey,flags)
+                sprites.append(spr_scaled)
+                del(spr)
+                del(spr_scaled)
+                #del(spr_size)
+        return [sprites[index] for index,spr in enumerate(sprites,start=0)]
+        flags = pygame.RLEACCEL
+        scaled_atlas = pygame.transform.scale(self.atlas,(128*multiplier,64*multiplier))
+        scaled_atlas.convert(8)
+        scaled_atlas.set_colorkey(colorkey,flags)
+        return scaled_atlas
+"""
 
 """class atlas(object):
     def __init__(self,atlas):
