@@ -4,8 +4,8 @@ from dataclasses import dataclass
 import math
 import time
 
-#from tkinter import Tk
-#from tkinter.filedialog import askopenfile, asksaveasfilename
+from tkinter import Tk
+from tkinter.filedialog import askopenfile, asksaveasfilename
 
 from hagia.font import font
 
