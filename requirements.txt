@@ -1,0 +1,5 @@
+llvmlite==0.38.0
+numba==0.55.1
+numpy==1.21.6
+pygame==2.1.2
+pyinstaller==4.9

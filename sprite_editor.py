@@ -7,7 +7,7 @@ import time
 from tkinter import Tk
 from tkinter.filedialog import askopenfile, asksaveasfilename
 
-from hagia.font import font
+from editor_utils.font import font
 
 import pygame
 import pygame.freetype

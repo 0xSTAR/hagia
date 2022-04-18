@@ -8,8 +8,8 @@ import time
 from tkinter import Tk
 from tkinter.filedialog import askopenfile
 
-from hagia.font import font
-from hagia.atlas import atlas
+from editor_utils.font import font
+from editor_utils.atlas import atlas
 
 _stdout = sys.stdout
 sys.stdout = open(os.devnull,'w')
