@@ -6,6 +6,9 @@ from hagia.errata import (
     HAGIA_ASSERT
 )
 
+from functools import cached_property
+from .graphicSYS import Color
+
 class Cart(object):
     def __init__(
         self,
@@ -63,3 +66,24 @@ class Cart(object):
     @property
     def flags(self):
         return None
+
+    @cached_property
+    def palette(self) -> tuple:
+        return (
+            Color(0,0,0,255),
+            Color(29,43,83,255),
+            Color(126,37,83,255),
+            Color(0,135,81,255),
+            Color(171,82,54,255),
+            Color(95,87,79,255),
+            Color(194,195,199,255),
+            Color(255,241,232,255),
+            Color(255,0,77,255),
+            Color(255,163,0,255),
+            Color(255,236,39,255),
+            Color(0,228,54,255),
+            Color(41,173,255,255),
+            Color(131,118,156,255),
+            Color(255,119,168,255),
+            Color(255,204,170,255),
+        )

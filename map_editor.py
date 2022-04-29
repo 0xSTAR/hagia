@@ -188,6 +188,7 @@ class editor(object):
                     return
                 try:
                     atlas0 = atlas(atlas_file) if atlas_file != None else None
+                    #print(atlas0)
                 except:
                     self.failed_import = 60
                     return
@@ -195,6 +196,7 @@ class editor(object):
                 self.gfx = atlas0.load(self.scale_factor*2) if not atlas0 == None else []
                 del(atlas0)
                 self.imported = not self.imported
+                #atlas0.convert(8)
             return
 
         if self.btn(1) and self.exported <= 0:

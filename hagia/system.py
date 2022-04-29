@@ -126,7 +126,7 @@ class System(
 
     def RESET(self) -> None:
         self.cart = self._cart
-        self.load_cart_data()
+        asyncio.run(self.load_cart_data())
         self._main_loop:bool = False
 
     def SHUTDOWN(self) -> NoReturn:

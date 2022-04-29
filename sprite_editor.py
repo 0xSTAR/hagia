@@ -545,11 +545,12 @@ class editor(object):
                     self.sprites[i-128].pixels[i2].num = int(data[i2])
 
     def export(self) -> None:
-        atlas = pygame.Surface((128,64),depth=8)
+        atlas = pygame.Surface((128,64))#,depth=8)
         #just keep it broken, lol. don't fix the palette
-        atlas.set_palette(
-            [colour for colour in self.colours]
-        )
+        #atlas.set_palette(
+        #    [colour for colour in self.colours]
+        #)
+        atlas.convert(8)
 
         # 0 means False, 1 means True
         flags = []
@@ -566,7 +567,8 @@ class editor(object):
 
             if DEBUG:print(f'EXPORT:: [ atlas item: {atlas_item} || atlas row: {atlas_row} ]')
 
-            sprite_surface = pygame.Surface((8,8),depth=8)
+            sprite_surface = pygame.Surface((8,8))
+            sprite_surface.convert(8)
             if DEBUG:print(f'EXPORT:: Sprite bit size: {sprite_surface.get_bitsize()}')
 
             for pixel_index,pix in enumerate(sprite.pixels,start=0):
@@ -610,6 +612,16 @@ class editor(object):
             flag_data+='\n'
         with open('flags.data','w') as flags_file:
             flags_file.write(flag_data)
+
+        # REAL SPRITE DATA
+        with open("sprites.data",'w') as spr_file:
+            TXT = ""
+            for spr in self.sprites:
+                pixs = [str(pix.num) for pix in spr.pixels]
+                for p in pixs:
+                    TXT += p + ","
+                TXT += "\n"
+            spr_file.write(TXT)
 
 
 

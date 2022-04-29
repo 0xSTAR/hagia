@@ -140,7 +140,8 @@ def rnd(x) -> int:
 
 @jit(nopython=True,fastmath=True)
 def rndrng(x,y) -> int:
-    return flr(rnd(random.randrange(x,y)))
+    # return flr(rnd(randrange(x,y)))
+    return flr(random.randrange(x,y))
 
 @jit(nopython=True)
 def srand(x) -> None:

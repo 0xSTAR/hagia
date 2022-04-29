@@ -35,6 +35,17 @@ class GraphicSystem(object):
         display.init()
         freetype.init()
 
+        self.__init_colour_palette__()
+
+        self.__init_display_stuff__()
+
+        #self.pal_mode = 0 # 16 would start at palette index 0
+
+        self.previous_line_x1 = 0
+        self.previous_line_y1 = 0
+
+    def __init_display_stuff__(self):
+
         flgs = SCALED | FULLSCREEN # pygame.SCALED
 
         display.set_caption(self.cart.c_name)
@@ -64,23 +75,22 @@ class GraphicSystem(object):
         )
         self.atlas.set_colorkey(self.default_colours[0])
 
-        self.pal_mode = 0 # 16 would start at palette index 0
-
-        self.__init_colour_palette__()
-
-        self.previous_line_x1 = 0
-        self.previous_line_y1 = 0
-
     async def load_graphics_data(self):
         if (
             hasattr(self.cart,"gfx") and
             self.cart.gfx != None and
             type(self.cart.gfx) is str
         ):
-            self.atlas = Atlas.load(path.join(self.cart.c_data_directory,self.cart.gfx))
-            self.atlas.convert(8)
-            self.atlas.set_palette(self.default_colours)
-            self.atlas.set_colorkey(self.default_colours[0])
+            self.atlas = Atlas.load_(path.join(self.cart.c_data_directory,self.cart.gfx))
+            #self.atlas.convert(8)
+            #self.atlas.set_palette(self.default_colours)
+            #self.atlas.set_colorkey(self.default_colours[0])
+
+        if (
+            hasattr(self.cart,"palette")
+        ):
+            self._default_colours = list(self.cart.palette)
+            self.colours = self.default_colours
 
     @cached_property
     def vscreen(self):
@@ -104,7 +114,43 @@ class GraphicSystem(object):
 
 
     def __init_colour_palette__(self):
+        self._default_colours:list = [
+            Color(0,0,0,255),
+            Color(29,43,83,255),
+            Color(126,37,83,255),
+            Color(0,135,81,255),
+            Color(171,82,54,255),
+            Color(95,87,79,255),
+            Color(194,195,199,255),
+            Color(255,241,232,255),
+            Color(255,0,77,255),
+            Color(255,163,0,255),
+            Color(255,236,39,255),
+            Color(0,228,54,255),
+            Color(41,173,255,255),
+            Color(131,118,156,255),
+            Color(255,119,168,255),
+            Color(255,204,170,255),
+        ]
         self.colours = self.default_colours
+        self.vcolours:dict = {
+            0:0,
+            1:1,
+            2:2,
+            3:3,
+            4:4,
+            5:5,
+            6:6,
+            7:7,
+            8:8,
+            9:9,
+            10:10,
+            11:11,
+            12:12,
+            13:13,
+            14:14,
+            15:15
+        }
         #self.scr.set_palette(self.colours)
 
     def clip(self,
@@ -128,7 +174,7 @@ class GraphicSystem(object):
     ) -> None:
         self.scr.set_at(
             (flr(x),flr(y)),
-            self.colours[col]
+            self.colours[self.vcolours[col]]
         )
 
     def pget(
@@ -166,7 +212,7 @@ class GraphicSystem(object):
     ) -> None:
         self.atlas.set_at(
             (flr(x),flr(y)),
-            self.colours[col]
+            self.colours[self.vcolours[col]]
         )
 
     def spr(
@@ -179,38 +225,38 @@ class GraphicSystem(object):
         flip_x:bool=False,
         flip_y:bool=False
     ) -> None:
+    
         n = flr(n)
-        _rect:Rect = Rect(
-            (n%HAGIA_SPECS.ATLAS_SPR_COLUMNS)*HAGIA_SPECS.BASE_SPRITE_SIZE,
-            (n//HAGIA_SPECS.ATLAS_SPR_COLUMNS)*HAGIA_SPECS.BASE_SPRITE_SIZE, # floor division
-            w*HAGIA_SPECS.BASE_SPRITE_SIZE,
-            h*HAGIA_SPECS.BASE_SPRITE_SIZE
-        )
-
         _pos_xy:tuple = (x+self._camera.x,y+self._camera.y)
 
+        surf = Surface((8,8))
+        surf.set_colorkey(self.colours[self.vcolours[0]])
+        data_sample = self.atlas[n*64:n*64+64]
+        for i,d in enumerate(data_sample,start=0):
+            x = i % 8
+            y = flr(i/8)
+            #if not d == 0:
+            draw.rect(
+                    surf,
+                    self.colours[self.vcolours[d]],
+                    Rect(x,y,1,1)
+                )
+
         if flip_x or flip_y:
-            _surf:Surface = self.atlas.subsurface(
-                _rect
-            )
             self.scr.blit(
                 transform.flip(
-                    _surf,
+                    surf,
                     flip_x,
                     flip_y
                 ),
                 _pos_xy
             )
-            del _surf
             return
 
         self.scr.blit(
-            self.atlas,
-            _pos_xy,
-            _rect
+            surf,
+            _pos_xy
         )
-
-        del _rect
 
     def sspr(
         self,
@@ -259,21 +305,32 @@ class GraphicSystem(object):
 
     def pal(
         self,
-        *args
+        c0:int,
+        c1:int,
+        p:int=0
     ) -> None:
-        pass
+        if p == 0:
+            self.dpal(int(c0),int(c1))
+        elif p == 1:
+            pass
+        elif p == 2:
+            pass
 
     def dpal(
         self,
-        *args
+        c0:int,
+        c1:int
     ) -> None:
-        pass
+        #self.vcolours[c0] ^= self.vcolours[c1]
+        #self.vcolours[c1] ^= self.vcolours[c0]
+        #self.vcolours[c0] ^= self.vcolours[c1]
+        self.vcolours[c0] = c1 #self.vcolours[c1]
 
     def rpal(
         self,
         *args
     ) -> None:
-        pass
+        self.vcolours = [0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15]
 
     def hprint(
         self,
@@ -292,7 +349,7 @@ class GraphicSystem(object):
     ) -> None:
         draw.circle(
             self.scr,
-            self.colours[int(col)],
+            self.colours[self.vcolours[int(col)]],
             (int(x)+self._camera.x,int(y)+self._camera.y),
             int(r),
             width=1
@@ -307,7 +364,7 @@ class GraphicSystem(object):
     ) -> None:
         draw.circle(
             self.scr,
-            self.colours[int(col)],
+            self.colours[self.vcolours[int(col)]],
             (int(x)+self._camera.x,int(y)+self._camera.y),
             int(r)
         )
@@ -320,18 +377,18 @@ class GraphicSystem(object):
         y1,
         col:int=0
     ) -> None:
-        x0 = int(x0)
-        x1 = int(x1)
-        y0 = int(y0)
-        y1 = int(y1)
+        x0 = int(x0) + self._camera.x
+        x1 = int(x1) + self._camera.x
+        y0 = int(y0) + self._camera.y
+        y1 = int(y1) + self._camera.y
         draw.rect(
             self.scr,
-            self.colours[int(col)],
+            self.colours[self.vcolours[int(col)]],
             Rect(
-                x0+self._camera.x,
-                y0+self._camera.y,
-                (x1-x0)+self._camera.x,
-                (y1-y0)+self._camera.y
+                x0,
+                y0,
+                (x1-x0),
+                (y1-y0)
             ),
             width=1
         )
@@ -344,18 +401,18 @@ class GraphicSystem(object):
         y1,
         col:int=0
     ) -> None:
-        x0 = int(x0)
-        x1 = int(x1)
-        y0 = int(y0)
-        y1 = int(y1)
+        x0 = int(x0) + self._camera.x
+        x1 = int(x1) + self._camera.x
+        y0 = int(y0) + self._camera.y
+        y1 = int(y1) + self._camera.y
         draw.rect(
             self.scr,
-            self.colours[int(col)],
+            self.colours[self.vcolours[int(col)]],
             Rect(
-                x0+self._camera.x,
-                y0+self._camera.y,
-                (x1-x0)+self._camera.x,
-                (y1-y0)+self._camera.y
+                x0,
+                y0,
+                (x1-x0),
+                (y1-y0)
             )
         )
 
@@ -367,18 +424,18 @@ class GraphicSystem(object):
         y1:int,
         col:int=0
     ) -> None:
-        x0 = int(x0)
-        x1 = int(x1)
-        y0 = int(y0)
-        y1 = int(y1)
+        x0 = int(x0) + self._camera.x
+        x1 = int(x1) + self._camera.x
+        y0 = int(y0) + self._camera.y
+        y1 = int(y1) + self._camera.y
         draw.ellipse(
             self.scr,
-            self.colours[col],
+            self.colours[self.vcolours[int(col)]],
             Rect(
                 x0,
                 y0,
-                (x1-x0)+self._camera.x,
-                (y1-y0)+self._camera.y,
+                (x1-x0),
+                (y1-y0),
             ),
             width=1
         )
@@ -390,18 +447,18 @@ class GraphicSystem(object):
         y1:int,
         col:int=0
     ) -> None:
-        x0 = int(x0)
-        x1 = int(x1)
-        y0 = int(y0)
-        y1 = int(y1)
+        x0 = int(x0) + self._camera.x
+        x1 = int(x1) + self._camera.x
+        y0 = int(y0) + self._camera.y
+        y1 = int(y1) + self._camera.y
         draw.ellipse(
             self.scr,
-            self.colours[col],
+            self.colours[self.vcolours[int(col)]],
             Rect(
                 x0,
                 y0,
-                (x1-x0)+self._camera.x,
-                (y1-y0)+self._camera.y,
+                (x1-x0),
+                (y1-y0),
             )
         )
 
@@ -422,268 +479,11 @@ class GraphicSystem(object):
 
         draw.line(
             self.scr,
-            self.colours[col],
-            (x0,y0),
-            (x1,y1)
+            self.colours[self.vcolours[int(col)]],
+            (x0+self._camera.x,y0+self._camera.y),
+            (x1+self._camera.x,y1+self._camera.y)
         )
 
     @cached_property
     def default_colours(self) -> list:
-        return [
-            Color(0, 0, 0, 255),
-            Color(29, 43, 83, 255),
-            Color(126, 37, 83, 255),
-            Color(0, 135, 81, 255),
-            Color(171, 82, 54, 255),
-            Color(95, 87, 79, 255),
-            Color(194, 195, 199, 255),
-            Color(255, 241, 232, 255),
-            Color(255, 0, 77, 255),
-            Color(255, 163, 0, 255),
-            Color(255, 236, 39, 255),
-            Color(0, 228, 54, 255),
-            Color(41, 173, 255, 255),
-            Color(131, 118, 156, 255),
-            Color(255, 119, 168, 255),
-            Color(255, 204, 170, 255),
-            Color(0, 146, 0, 255),
-            Color(0, 146, 85, 255),
-            Color(0, 146, 170, 255),
-            Color(0, 146, 255, 255),
-            Color(0, 182, 0, 255),
-            Color(0, 182, 85, 255),
-            Color(0, 182, 170, 255),
-            Color(0, 182, 255, 255),
-            Color(0, 219, 0, 255),
-            Color(0, 219, 85, 255),
-            Color(0, 219, 170, 255),
-            Color(0, 219, 255, 255),
-            Color(0, 255, 0, 255),
-            Color(0, 255, 85, 255),
-            Color(0, 255, 170, 255),
-            Color(0, 255, 255, 255),
-            Color(85, 0, 0, 255),
-            Color(85, 0, 85, 255),
-            Color(85, 0, 170, 255),
-            Color(85, 0, 255, 255),
-            Color(85, 36, 0, 255),
-            Color(85, 36, 85, 255),
-            Color(85, 36, 170, 255),
-            Color(85, 36, 255, 255),
-            Color(85, 73, 0, 255),
-            Color(85, 73, 85, 255),
-            Color(85, 73, 170, 255),
-            Color(85, 73, 255, 255),
-            Color(85, 109, 0, 255),
-            Color(85, 109, 85, 255),
-            Color(85, 109, 170, 255),
-            Color(85, 109, 255, 255),
-            Color(85, 146, 0, 255),
-            Color(85, 146, 85, 255),
-            Color(85, 146, 170, 255),
-            Color(85, 146, 255, 255),
-            Color(85, 182, 0, 255),
-            Color(85, 182, 85, 255),
-            Color(85, 182, 170, 255),
-            Color(85, 182, 255, 255),
-            Color(85, 219, 0, 255),
-            Color(85, 219, 85, 255),
-            Color(85, 219, 170, 255),
-            Color(85, 219, 255, 255),
-            Color(85, 255, 0, 255),
-            Color(85, 255, 85, 255),
-            Color(85, 255, 170, 255),
-            Color(85, 255, 255, 255),
-            Color(170, 0, 0, 255),
-            Color(170, 0, 85, 255),
-            Color(170, 0, 170, 255),
-            Color(170, 0, 255, 255),
-            Color(170, 36, 0, 255),
-            Color(170, 36, 85, 255),
-            Color(170, 36, 170, 255),
-            Color(170, 36, 255, 255),
-            Color(170, 73, 0, 255),
-            Color(170, 73, 85, 255),
-            Color(170, 73, 170, 255),
-            Color(170, 73, 255, 255),
-            Color(170, 109, 0, 255),
-            Color(170, 109, 85, 255),
-            Color(170, 109, 170, 255),
-            Color(170, 109, 255, 255),
-            Color(170, 146, 0, 255),
-            Color(170, 146, 85, 255),
-            Color(170, 146, 170, 255),
-            Color(170, 146, 255, 255),
-            Color(170, 182, 0, 255),
-            Color(170, 182, 85, 255),
-            Color(170, 182, 170, 255),
-            Color(170, 182, 255, 255),
-            Color(170, 219, 0, 255),
-            Color(170, 219, 85, 255),
-            Color(170, 219, 170, 255),
-            Color(170, 219, 255, 255),
-            Color(170, 255, 0, 255),
-            Color(170, 255, 85, 255),
-            Color(170, 255, 170, 255),
-            Color(170, 255, 255, 255),
-            Color(255, 0, 0, 255),
-            Color(255, 0, 85, 255),
-            Color(255, 0, 170, 255),
-            Color(255, 0, 255, 255),
-            Color(255, 36, 0, 255),
-            Color(255, 36, 85, 255),
-            Color(255, 36, 170, 255),
-            Color(255, 36, 255, 255),
-            Color(255, 73, 0, 255),
-            Color(255, 73, 85, 255),
-            Color(255, 73, 170, 255),
-            Color(255, 73, 255, 255),
-            Color(255, 109, 0, 255),
-            Color(255, 109, 85, 255),
-            Color(255, 109, 170, 255),
-            Color(255, 109, 255, 255),
-            Color(255, 146, 0, 255),
-            Color(255, 146, 85, 255),
-            Color(255, 146, 170, 255),
-            Color(255, 146, 255, 255),
-            Color(255, 182, 0, 255),
-            Color(255, 182, 85, 255),
-            Color(255, 182, 170, 255),
-            Color(255, 182, 255, 255),
-            Color(255, 219, 0, 255),
-            Color(255, 219, 85, 255),
-            Color(255, 219, 170, 255),
-            Color(255, 219, 255, 255),
-            Color(255, 255, 0, 255),
-            Color(255, 255, 85, 255),
-            Color(255, 255, 170, 255),
-            Color(255, 255, 255, 255),
-            Color(0, 0, 0, 255),
-            Color(0, 0, 85, 255),
-            Color(0, 0, 170, 255),
-            Color(0, 0, 255, 255),
-            Color(0, 36, 0, 255),
-            Color(0, 36, 85, 255),
-            Color(0, 36, 170, 255),
-            Color(0, 36, 255, 255),
-            Color(0, 73, 0, 255),
-            Color(0, 73, 85, 255),
-            Color(0, 73, 170, 255),
-            Color(0, 73, 255, 255),
-            Color(0, 109, 0, 255),
-            Color(0, 109, 85, 255),
-            Color(0, 109, 170, 255),
-            Color(0, 109, 255, 255),
-            Color(0, 146, 0, 255),
-            Color(0, 146, 85, 255),
-            Color(0, 146, 170, 255),
-            Color(0, 146, 255, 255),
-            Color(0, 182, 0, 255),
-            Color(0, 182, 85, 255),
-            Color(0, 182, 170, 255),
-            Color(0, 182, 255, 255),
-            Color(0, 219, 0, 255),
-            Color(0, 219, 85, 255),
-            Color(0, 219, 170, 255),
-            Color(0, 219, 255, 255),
-            Color(0, 255, 0, 255),
-            Color(0, 255, 85, 255),
-            Color(0, 255, 170, 255),
-            Color(0, 255, 255, 255),
-            Color(85, 0, 0, 255),
-            Color(85, 0, 85, 255),
-            Color(85, 0, 170, 255),
-            Color(85, 0, 255, 255),
-            Color(85, 36, 0, 255),
-            Color(85, 36, 85, 255),
-            Color(85, 36, 170, 255),
-            Color(85, 36, 255, 255),
-            Color(85, 73, 0, 255),
-            Color(85, 73, 85, 255),
-            Color(85, 73, 170, 255),
-            Color(85, 73, 255, 255),
-            Color(85, 109, 0, 255),
-            Color(85, 109, 85, 255),
-            Color(85, 109, 170, 255),
-            Color(85, 109, 255, 255),
-            Color(85, 146, 0, 255),
-            Color(85, 146, 85, 255),
-            Color(85, 146, 170, 255),
-            Color(85, 146, 255, 255),
-            Color(85, 182, 0, 255),
-            Color(85, 182, 85, 255),
-            Color(85, 182, 170, 255),
-            Color(85, 182, 255, 255),
-            Color(85, 219, 0, 255),
-            Color(85, 219, 85, 255),
-            Color(85, 219, 170, 255),
-            Color(85, 219, 255, 255),
-            Color(85, 255, 0, 255),
-            Color(85, 255, 85, 255),
-            Color(85, 255, 170, 255),
-            Color(85, 255, 255, 255),
-            Color(170, 0, 0, 255),
-            Color(170, 0, 85, 255),
-            Color(170, 0, 170, 255),
-            Color(170, 0, 255, 255),
-            Color(170, 36, 0, 255),
-            Color(170, 36, 85, 255),
-            Color(170, 36, 170, 255),
-            Color(170, 36, 255, 255),
-            Color(170, 73, 0, 255),
-            Color(170, 73, 85, 255),
-            Color(170, 73, 170, 255),
-            Color(170, 73, 255, 255),
-            Color(170, 109, 0, 255),
-            Color(170, 109, 85, 255),
-            Color(170, 109, 170, 255),
-            Color(170, 109, 255, 255),
-            Color(170, 146, 0, 255),
-            Color(170, 146, 85, 255),
-            Color(170, 146, 170, 255),
-            Color(170, 146, 255, 255),
-            Color(170, 182, 0, 255),
-            Color(170, 182, 85, 255),
-            Color(170, 182, 170, 255),
-            Color(170, 182, 255, 255),
-            Color(170, 219, 0, 255),
-            Color(170, 219, 85, 255),
-            Color(170, 219, 170, 255),
-            Color(170, 219, 255, 255),
-            Color(170, 255, 0, 255),
-            Color(170, 255, 85, 255),
-            Color(170, 255, 170, 255),
-            Color(170, 255, 255, 255),
-            Color(255, 0, 0, 255),
-            Color(255, 0, 85, 255),
-            Color(255, 0, 170, 255),
-            Color(255, 0, 255, 255),
-            Color(255, 36, 0, 255),
-            Color(255, 36, 85, 255),
-            Color(255, 36, 170, 255),
-            Color(255, 36, 255, 255),
-            Color(255, 73, 0, 255),
-            Color(255, 73, 85, 255),
-            Color(255, 73, 170, 255),
-            Color(255, 73, 255, 255),
-            Color(255, 109, 0, 255),
-            Color(255, 109, 85, 255),
-            Color(255, 109, 170, 255),
-            Color(255, 109, 255, 255),
-            Color(255, 146, 0, 255),
-            Color(255, 146, 85, 255),
-            Color(255, 146, 170, 255),
-            Color(255, 146, 255, 255),
-            Color(255, 182, 0, 255),
-            Color(255, 182, 85, 255),
-            Color(255, 182, 170, 255),
-            Color(255, 182, 255, 255),
-            Color(255, 219, 0, 255),
-            Color(255, 219, 85, 255),
-            Color(255, 219, 170, 255),
-            Color(255, 219, 255, 255),
-            Color(255, 255, 0, 255),
-            Color(255, 255, 85, 255),
-            Color(255, 255, 170, 255),
-            Color(255, 255, 255, 255),
-        ]
+        return self._default_colours
