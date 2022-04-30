@@ -30,7 +30,7 @@ class System(
     def __init_system__(self,_cartridge) -> None:
 
         self._cart = _cartridge
-        self.cart = self._cart
+        self.cart = self._cart()
 
         init()
         self.init_flags()
@@ -58,10 +58,22 @@ class System(
         await t2
         await t3
         await t4
+        # PRINT SIZES OF DATA
+        #self.DEBUG_DATASET_SIZES()
         del t1
         del t2
         del t3
         del t4
+
+    def DEBUG_DATASET_SIZES(self):
+        print("----------------------------------------\n")
+        print(f"Gfx size  : {sys.getsizeof(self.atlas)  / 1000} mB")
+        print(f"Map size  : {sys.getsizeof(self._map)/ 1000} mB")
+        print(f"Sfx size  : {sys.getsizeof(self.snd) / 1000} mB")
+        print(f"Mus size  : {sys.getsizeof(self.mus) / 1000} mB")
+
+        print(f"Cart size : {sys.getsizeof(self.cart) / 1000} mB")
+        print("\n----------------------------------------\n")
 
     def main_loop(self) -> None:
         self.cart.init()
@@ -125,7 +137,7 @@ class System(
         pass
 
     def RESET(self) -> None:
-        self.cart = self._cart
+        self.cart = self._cart()
         asyncio.run(self.load_cart_data())
         self._main_loop:bool = False
 

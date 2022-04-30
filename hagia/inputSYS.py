@@ -3,7 +3,7 @@ _stdout = sys.stdout
 sys.stdout = None
 
 from pygame import (
-    key
+    key, mouse
 )
 from pygame.locals import *
 
@@ -30,6 +30,8 @@ class InputSystem(object):
             HAGIA_CONTROLS.PAUSE, # 7
             HAGIA_CONTROLS.EXIT   # 8
         ]
+
+        mouse.set_visible(False)
 
     def reg_kevs(self):
         self.kevs = key.get_pressed()
